@@ -25,6 +25,7 @@ class HashMapRowAggregator implements RowHandlerInterface
      * @var float|int
      */
     private $currentTmpFileSize;
+
     /**
      * @var int
      */
