@@ -12,7 +12,7 @@ if(empty($path)){
     exit(0);
 }
 
-$rowHandler = new HashMapRowAggregator(new DateHashCalculator());
+$rowHandler = new HashMapRowAggregator(new DateHashCalculator(), 1);
 $aggregator = new CsvMetricsReader($path, $rowHandler);
 
 try {

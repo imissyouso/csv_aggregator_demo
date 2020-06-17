@@ -114,8 +114,8 @@ class HashMapRowAggregator implements RowHandlerInterface
         [$parsedRowNameHash, $parsedValues, $parsedLinkToTheNextChunk] = $this->parseChunk($currentChunk);
 
         // If the place is already filled and has a link to another place in memory then jump there and try to save again
-        if ($parsedLinkToTheNextChunk) {
-            $this->put($parsedLinkToTheNextChunk, $parsedRowNameHash, $values);
+        if ($parsedRowNameHash !== $rowNameHash && $parsedLinkToTheNextChunk) {
+            $this->put($parsedLinkToTheNextChunk, $rowNameHash, $values);
 
             return;
         }
