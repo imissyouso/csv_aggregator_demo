@@ -81,11 +81,7 @@ class CsvMetricsReader
             RecursiveIteratorIterator::CATCH_GET_CHILD
         );
 
-        $iterator->rewind();
-
-        while ($iterator->valid()) {
-            $path = $iterator->key();
-            $fileInfo = $iterator->current();
+        foreach ($iterator as $path => $fileInfo) {
 
             if ($fileInfo->getExtension() !== $this->desiredFileExtension) {
                 $iterator->next();
@@ -93,8 +89,6 @@ class CsvMetricsReader
             }
 
             $this->handleFile($path);
-
-            $iterator->next();
         }
 
         $this->rowHandler->close();

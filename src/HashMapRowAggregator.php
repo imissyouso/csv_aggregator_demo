@@ -92,16 +92,23 @@ class HashMapRowAggregator implements RowHandlerInterface
         $this->put($bucketOffset, $rowNameHash, $rowData);
     }
 
+    protected function parseChunk(string $chunk): array
+    {
+        // every chunk has ROW_HASH|...AGGREGATED_VALUES|LINK_TO_THE_COLLISIONAL_CHUNK structure in sum it gives us 20 bytes
+        $parsedRowNameHash = unpack('I', $chunk)[1];
+        $parsedValues = array_values(unpack('f3', $chunk, 4));
+        $parsedLinkToTheNextChunk = unpack('L', $chunk, $this->getChunkSize() - 4)[1];
+
+        return [$parsedRowNameHash, $parsedValues, $parsedLinkToTheNextChunk];
+    }
+
     protected function put($offset, $rowNameHash, $values): void
     {
         fseek($this->tmpPointer, $offset, SEEK_SET);
 
         $currentChunk = fread($this->tmpPointer, $this->getChunkSize());
 
-        // every chunk has ROW_HASH|...AGGREGATED_VALUES|LINK_TO_THE_COLLISIONAL_CHUNK structure in sum it gives us 20 bytes
-        $parsedRowNameHash = unpack('I', $currentChunk)[1];
-        $parsedValues = array_values(unpack('f3', $currentChunk, 4));
-        $parsedLinkToTheNextChunk = unpack('L', $currentChunk, $this->getChunkSize() - 4)[1];
+        [$parsedRowNameHash, $parsedValues, $parsedLinkToTheNextChunk] = $this->parseChunk($currentChunk);
 
         // If the place is already filled and has a link to another place in memory then jump there and try to save again
         if ($parsedLinkToTheNextChunk) {
@@ -155,14 +162,13 @@ class HashMapRowAggregator implements RowHandlerInterface
         }
 
         while ($currentChunk = fread($this->tmpPointer, $this->getChunkSize())) {
-            $parsedIndex = unpack('I', $currentChunk)[1];
-            $parsedValues = array_values(unpack('f3', $currentChunk, 4));
+            [$parsedRowNameHash, $parsedValues] = $this->parseChunk($currentChunk);
 
-            if ($parsedIndex) {
+            if ($parsedRowNameHash) {
                 fputcsv(
                     $outPointer,
                     array_merge(
-                        [$parsedIndex],
+                        [$parsedRowNameHash],
                         array_map(
                             static function ($v) {
                                 return round($v, 2);
