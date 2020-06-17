@@ -28,5 +28,7 @@ by this way it will scan the current directory. The output file will be named `r
 - For similar purposes in production, better to use something like `Kafka Streams`/`KSql` or `Redis Streams`.
 - Ребят, ну тесты уже писать не стал, уже и так перебор :)
 - p.s. если прям сильно нужно, то добавлю.
+- здесь нет ни строчки чужого кода.
+
 ## Author
 Andrey Vorobyev
