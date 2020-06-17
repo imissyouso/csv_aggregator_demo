@@ -24,5 +24,8 @@ by this way it will scan the current directory. The output file will be named `r
 ## References
 * https://habr.com/ru/post/421179/
 
+## Comment
+- For similar purposes in production, better to use something like `Kafka Streams`/`KSql` or `Redis Streams`.
+
 ## Author
 Andrey Vorobyev
