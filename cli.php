@@ -3,6 +3,7 @@ require_once 'vendor/autoload.php';
 
 use CsvAggregator\CsvMetricsReader;
 use CSVAggregator\CsvMetricsReaderException;
+use CsvAggregator\DateHashCalculator;
 use CsvAggregator\HashMapRowAggregator;
 
 $path = $argv[1];
@@ -11,7 +12,8 @@ if(empty($path)){
     exit(0);
 }
 
-$aggregator = new CsvMetricsReader($path, new HashMapRowAggregator());
+$rowHandler = new HashMapRowAggregator(new DateHashCalculator());
+$aggregator = new CsvMetricsReader($path, $rowHandler);
 
 try {
     $aggregator->run();

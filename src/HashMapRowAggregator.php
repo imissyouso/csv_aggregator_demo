@@ -41,7 +41,13 @@ class HashMapRowAggregator implements RowHandlerInterface
     private $resultFileDelimiter;
 
     /**
+     * @var HashCalculatorInterface
+     */
+    private $hashCalculator;
+
+    /**
      * HashMapRowAggregator constructor.
+     * @param HashCalculatorInterface $hashCalculator
      * @param int $hashMapBucketSize
      * @param string $resultFilePath
      * @param string $tmpFilePath
@@ -49,11 +55,12 @@ class HashMapRowAggregator implements RowHandlerInterface
      * @param string $resultFileDelimiter
      */
     public function __construct(
-        $hashMapBucketSize = 1024,
-        $resultFilePath = './result.csv',
-        $tmpFilePath = './out.bin',
-        $metricValuesPerRow = 3,
-        $resultFileDelimiter = ';'
+        HashCalculatorInterface $hashCalculator,
+        int $hashMapBucketSize = 1024,
+        string $resultFilePath = './result.csv',
+        string $tmpFilePath = './out.bin',
+        int $metricValuesPerRow = 3,
+        string $resultFileDelimiter = ';'
     ) {
         $this->hashMapBucketSize = $hashMapBucketSize;
         $this->resultFilePath = $resultFilePath;
@@ -61,6 +68,7 @@ class HashMapRowAggregator implements RowHandlerInterface
         $this->metricValuesPerRow = $metricValuesPerRow;
         $this->currentTmpFileSize = $hashMapBucketSize * $this->getChunkSize();
         $this->resultFileDelimiter = $resultFileDelimiter;
+        $this->hashCalculator = $hashCalculator;
     }
 
     protected function getChunkSize(): int
@@ -68,12 +76,6 @@ class HashMapRowAggregator implements RowHandlerInterface
         // @TODO: should't be hardcoded ofc.
         // every chunk has ROW_HASH(4b)|...AGGREGATED_VALUES(4b*n)|LINK_TO_THE_COLLISIONAL_CHUNK(4b) structure in sum it gives us 20 bytes
         return 4 + 4 + ($this->metricValuesPerRow * 4);
-    }
-
-    protected function getRowNameHash(string $rowName): int
-    {
-        return (integer) str_replace('-', '', $rowName);
-        //return (integer)md5($rowName); or any other hash function...
     }
 
     public function init(): void
@@ -85,7 +87,7 @@ class HashMapRowAggregator implements RowHandlerInterface
 
     public function handleRow(string $rowName, array $rowData): void
     {
-        $rowNameHash = $this->getRowNameHash($rowName);
+        $rowNameHash = (int) $this->hashCalculator->calculate($rowName);
 
         // have any questions? See https://habr.com/ru/post/421179/
         $bucketOffset = ($rowNameHash & ($this->hashMapBucketSize - 1)) * $this->getChunkSize();
@@ -169,7 +171,7 @@ class HashMapRowAggregator implements RowHandlerInterface
                 fputcsv(
                     $outPointer,
                     array_merge(
-                        [$parsedRowNameHash],
+                        [$this->hashCalculator->hashToReadableName($parsedRowNameHash)],
                         array_map(
                             static function ($v) {
                                 return round($v, 2);
