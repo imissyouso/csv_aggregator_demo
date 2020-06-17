@@ -149,11 +149,6 @@ class CsvMetricsReader
                     }
                 }
 
-                if (!is_numeric($currentValue)) {
-                    // ignore not numeric values, set to zero by default
-                    $currentValue = 0;
-                }
-
                 $metricValues[] = $currentValue;
             }
 
