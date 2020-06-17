@@ -7,9 +7,9 @@
 > $ php cli.php [dirToScan]
 
 for example:
-> $ php cli.php .
+> $ php cli.php data
 
-by this way it will scan the current directory. The output file will be named `result.csv`.
+by this way it will scan the `data` directory. The output file will be named `result.csv`.
 
 ## Implementation details
 
