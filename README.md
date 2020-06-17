@@ -31,5 +31,8 @@ by this way it will scan the `data` directory. The output file will be named `re
 - здесь нет ни строчки чужого кода.
 - всегда рад обсудить результат лично!
 
+## Original task
+https://gist.github.com/pavelkdev/435244a2c2e3a9d8dcb2353511fd9dad
+
 ## Author
 Andrey Vorobyev
