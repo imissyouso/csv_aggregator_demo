@@ -1,0 +1,16 @@
+{
+    "name": "asparrow/csv_aggregator",
+    "type": "project",
+    "authors": [
+        {
+            "name": "Andrey Vorobyev",
+            "email": "andrew.sprw@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "CsvAggregator\\": "src/"
+        }
+    }
+}
