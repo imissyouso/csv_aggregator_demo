@@ -12,7 +12,8 @@ if(empty($path)){
     exit(0);
 }
 
-$rowHandler = new HashMapRowAggregator(new DateHashCalculator(), 1);
+// bucket size is 2 only for test purposes
+$rowHandler = new HashMapRowAggregator(new DateHashCalculator(), 2);
 $aggregator = new CsvMetricsReader($path, $rowHandler);
 
 try {
