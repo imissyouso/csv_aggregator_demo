@@ -29,6 +29,7 @@ by this way it will scan the current directory. The output file will be named `r
 - Ребят, ну тесты уже писать не стал, уже и так перебор :)
 - p.s. если прям сильно нужно, то добавлю.
 - здесь нет ни строчки чужого кода.
+- всегда рад обсудить результат лично!
 
 ## Author
 Andrey Vorobyev
