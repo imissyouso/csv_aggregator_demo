@@ -13,6 +13,8 @@ by this way it will scan the current directory. The output file will be named `r
 
 ## Implementation details
 
+- Does not require any external dependencies;
+- Implemented on pure php;
 - Based on **own implementation** of `HashMap` which stores on hard drive (with helping of `fseek` magic for O(1) access);
 - Perfectly demonstrates pack/unpack php functions usage;
 - As result, it does not consume extra memory while reading input data and generating result CVS file with aggregated data;
